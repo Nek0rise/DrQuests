@@ -1,0 +1,5 @@
+name: drQuests
+version: '1.1'
+main: uwu.nekorise.drQuests.DrQuests
+api-version: '1.21'
+authors: [ Nekorise ]
