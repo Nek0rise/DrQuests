@@ -9,43 +9,75 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class ConfigManager {
-    private final static String path = DrQuests.getInstance().getDataFolder().getAbsolutePath() + "/";
-    private final static List<String> langConfigFiles = List.of("en.yml");
-    private final static List<String> guiConfigFiles = List.of("example.yml");
+public final class ConfigManager {
 
-    public static FileConfiguration getConfig(String cfgName) throws IOException, InvalidConfigurationException {
-        FileConfiguration fileConfiguration = new YamlConfiguration();
-        fileConfiguration.options().parseComments(true);
-        fileConfiguration.load(path + cfgName);
+    private final DrQuests plugin;
+    private final File dataFolder;
 
-        return fileConfiguration;
+    private final List<String> langConfigFiles = List.of("en.yml");
+    private final List<String> guiConfigFiles = List.of("example.yml");
+
+    public ConfigManager(DrQuests plugin) {
+        this.plugin = plugin;
+        this.dataFolder = plugin.getDataFolder();
     }
 
-    private static void createConfigs() {
-        File defaultConfig = new File(path, "config.yml");
-        if (!defaultConfig.exists()) {
-            DrQuests.getInstance().saveResource("config.yml", false);
-        }
-
-        for (String langConfigName : langConfigFiles) {
-            File langConfig = new File(path, "lang/" + langConfigName);
-            if (!langConfig.exists()) {
-                DrQuests.getInstance().saveResource("lang/" + langConfigName, false);
-            }
-        }
-        for (String guiConfigName : guiConfigFiles) {
-            File guiFolder = new File(path, "gui/" + guiConfigName);
-            if (!guiFolder.exists()) {
-                DrQuests.getInstance().saveResource("gui/" + guiConfigName, false);
-            }
-        }
-    }
-
-    public static void loadConfig() {
+    public void init() {
+        createFolders();
         createConfigs();
-        //MainConfigStorage.loadData();
-        //LangConfigStorage.loadData();
-        //GuiConfigStorage.loadData();
+    }
+
+    public FileConfiguration getConfig(String relativePath) throws IOException, InvalidConfigurationException {
+        File file = new File(dataFolder, relativePath);
+
+        YamlConfiguration configuration = new YamlConfiguration();
+        configuration.options().parseComments(true);
+        configuration.load(file);
+
+        return configuration;
+    }
+
+    public File getGuiFolder() {
+        return new File(dataFolder, "gui");
+    }
+
+    public File getLangFolder() {
+        return new File(dataFolder, "lang");
+    }
+
+    private void createFolders() {
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+
+        new File(dataFolder, "lang").mkdirs();
+        new File(dataFolder, "gui").mkdirs();
+    }
+
+    private void createConfigs() {
+
+        // config.yml
+        File configFile = new File(dataFolder, "config.yml");
+        if (!configFile.exists()) {
+            plugin.saveResource("config.yml", false);
+        }
+
+        // lang
+        for (String fileName : langConfigFiles) {
+            File file = new File(dataFolder, "lang/" + fileName);
+
+            if (!file.exists()) {
+                plugin.saveResource("lang/" + fileName, false);
+            }
+        }
+
+        // gui
+        for (String fileName : guiConfigFiles) {
+            File file = new File(dataFolder, "gui/" + fileName);
+
+            if (!file.exists()) {
+                plugin.saveResource("gui/" + fileName, false);
+            }
+        }
     }
 }

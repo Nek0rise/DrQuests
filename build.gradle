@@ -59,3 +59,9 @@ processResources {
         expand props
     }
 }
+
+tasks.named("jar") {
+    destinationDirectory.set(file("C:/Users/super/Desktop/leaf1.21.8/plugins"))
+    archiveBaseName.set("drQuests")
+    archiveVersion.set(version)
+}
