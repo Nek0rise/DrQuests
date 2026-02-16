@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
+import uwu.nekorise.drQuests.gui.action.GuiAction;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public class GuiItem {
     private final List<String> lore;
     private final List<ItemFlag> flags;
     private final Integer customModelData;
-    //TODO private final List<GuiAction> actions;
+    private final List<GuiAction> actions;
 }

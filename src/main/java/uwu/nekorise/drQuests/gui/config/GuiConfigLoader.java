@@ -6,10 +6,15 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
 import uwu.nekorise.drQuests.config.ConfigManager;
+import uwu.nekorise.drQuests.gui.action.CloseGuiAction;
+import uwu.nekorise.drQuests.gui.action.GuiAction;
+import uwu.nekorise.drQuests.gui.action.OpenGuiAction;
+import uwu.nekorise.drQuests.gui.action.RefreshGuiAction;
 import uwu.nekorise.drQuests.gui.model.GuiDefinition;
 import uwu.nekorise.drQuests.gui.model.GuiItem;
 import uwu.nekorise.drQuests.gui.registry.GuiRegistry;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +56,7 @@ public final class GuiConfigLoader {
 
                 String questId = section.getString("id", questKey);
 
+                // gui-item data fill
                 ConfigurationSection guiSection = section.getConfigurationSection("gui-item");
 
                 Material material = Material.valueOf(guiSection.getString("material"));
@@ -58,12 +64,10 @@ public final class GuiConfigLoader {
                 String name = guiSection.getString("name");
                 List<String> lore = guiSection.getStringList("lore");
                 List<ItemFlag> flags = parseFlags(guiSection.getStringList("flags"));
-                Integer customModelData = null;
-                if (guiSection.contains("custom-model-data")) {
-                    customModelData = guiSection.getInt("custom-model-data");
-                }
+                List<GuiAction> actions = parseActions(guiSection.getStringList("actions"));
+                Integer customModelData = guiSection.contains("custom-model-data") ? guiSection.getInt("custom-model-data") : null;
 
-                GuiItem item = new GuiItem(questId, material, slot, name, lore, flags, customModelData);
+                GuiItem item = new GuiItem(questId, material, slot, name, lore, flags, customModelData, actions);
                 items.add(item);
             }
         } catch (Exception e) {
@@ -82,5 +86,21 @@ public final class GuiConfigLoader {
             }
         }
         return flags;
+    }
+
+    private List<GuiAction> parseActions(List<String> raw) {
+        List<GuiAction> actions = new ArrayList<>();
+
+        for (String s : raw) {
+            if (s.startsWith("[open_gui]")) {
+                String target = s.replace("[open_gui]", "").trim();
+                actions.add(new OpenGuiAction(target));
+            } else if (s.startsWith("[close]")) {
+                actions.add(new CloseGuiAction());
+            } else if (s.startsWith("[refresh]")) {
+                actions.add(new RefreshGuiAction());
+            }
+        }
+        return actions;
     }
 }
