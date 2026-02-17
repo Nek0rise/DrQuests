@@ -71,7 +71,7 @@ public class MongoQuestRepository implements QuestRepository {
 
     private QuestProgress map(Document doc) {
         return new QuestProgress(
-                doc.getString("playerId"),
+                doc.getString("nickname"),
                 doc.getString("questId"),
                 doc.getInteger("progress"),
                 doc.getBoolean("completed")
