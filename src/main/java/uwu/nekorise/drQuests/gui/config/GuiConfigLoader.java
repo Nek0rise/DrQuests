@@ -14,13 +14,12 @@ import uwu.nekorise.drQuests.gui.model.GuiDefinition;
 import uwu.nekorise.drQuests.gui.model.GuiItem;
 import uwu.nekorise.drQuests.gui.registry.GuiRegistry;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-public final class GuiConfigLoader {
+public class GuiConfigLoader {
 
     private final ConfigManager configManager;
 
