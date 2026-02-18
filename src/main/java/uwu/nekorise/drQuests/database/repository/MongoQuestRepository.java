@@ -20,7 +20,7 @@ public class MongoQuestRepository implements QuestRepository {
 
     @Override
     public void save(QuestProgress progress) {
-        Document document = new Document()
+        Document doc = new Document()
                 .append("nickname", progress.getNickname())
                 .append("questId", progress.getQuestId())
                 .append("progress", progress.getProgress())
@@ -31,7 +31,7 @@ public class MongoQuestRepository implements QuestRepository {
                         Filters.eq("nickname", progress.getNickname()),
                         Filters.eq("questId", progress.getQuestId())
                 ),
-                document,
+                doc,
                 new ReplaceOptions().upsert(true)
         );
     }
