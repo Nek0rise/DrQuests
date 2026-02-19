@@ -3,6 +3,7 @@ package uwu.nekorise.drQuests.database.repository;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import uwu.nekorise.drQuests.database.MongoManager;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
@@ -33,6 +34,37 @@ public class MongoQuestRepository implements QuestRepository {
                 ),
                 doc,
                 new ReplaceOptions().upsert(true)
+        );
+    }
+
+    public void addProgress(String nickname, String questId, int value) {
+        collection.updateOne(
+                Filters.and(
+                        Filters.eq("nickname", nickname),
+                        Filters.eq("questId", questId)
+                ),
+                new Document("$inc",
+                        new Document("progress", value)
+                ).append("$setOnInsert",
+                        new Document("nickname", nickname)
+                                .append("questId", questId)
+                                .append("completed", false)
+                ),
+                new UpdateOptions().upsert(true)
+        );
+    }
+
+    @Override
+    public void setCompleted(String nickname, String questId) {
+
+        collection.updateOne(
+                Filters.and(
+                        Filters.eq("nickname", nickname),
+                        Filters.eq("questId", questId)
+                ),
+                new Document("$set",
+                        new Document("completed", true)
+                )
         );
     }
 

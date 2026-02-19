@@ -1,11 +1,10 @@
-package uwu.nekorise.drQuests.gui.config;
+package uwu.nekorise.drQuests.config;
 
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemFlag;
-import uwu.nekorise.drQuests.config.ConfigManager;
 import uwu.nekorise.drQuests.gui.action.CloseGuiAction;
 import uwu.nekorise.drQuests.gui.action.GuiAction;
 import uwu.nekorise.drQuests.gui.action.OpenGuiAction;
@@ -24,7 +23,7 @@ public class GuiConfigLoader {
     private final ConfigManager configManager;
 
     public void load(GuiRegistry registry) {
-
+        registry.clear();
         File[] files = configManager.getGuiFolder().listFiles((dir, name) -> name.endsWith(".yml"));
 
         if (files == null) return;

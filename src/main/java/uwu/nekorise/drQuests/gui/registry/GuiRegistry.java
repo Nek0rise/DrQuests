@@ -11,6 +11,9 @@ public class GuiRegistry {
     private final Map<String, GuiDefinition> guis = new HashMap<>();
 
     public void register(GuiDefinition def) {
+        if (guis.containsKey(def.getName())) {
+            throw new IllegalStateException("GUI already exists: "  + def.getName());
+        }
         guis.put(def.getName(), def);
     }
 
@@ -20,5 +23,9 @@ public class GuiRegistry {
 
     public Collection<GuiDefinition> findAll() {
         return guis.values();
+    }
+
+    public void clear() {
+        guis.clear();
     }
 }

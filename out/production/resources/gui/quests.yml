@@ -1,0 +1,52 @@
+quest-1:
+  id: quest-1
+  type: MINING
+  target: DIAMOND_ORE
+  required-amount: 10
+  reward-command: "eco give %player% 1000"
+  reward-items: []
+  gui-item:
+    material: DIAMOND_PICKAXE
+    index: 10
+    name: "&b&lDiamond Miner &7(ID: #1)"
+    lore:
+      - ""
+      - "&7Goal: &fMine 10 Diamonds"
+      - "&7Progress: &e%progress%&7/&e%required% &8(%percentage%%)"
+      - ""
+      - "&7Rewards:"
+      - " &8- &a$1,000"
+      - ""
+      - "&eClick to track this quest!"
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    custom-model-data: 105
+    actions:
+      - "[close]"
+quest-2:
+  id: quest-2
+  type: MINING
+  target: DIAMOND_ORE
+  required-amount: 10
+  reward-command: "eco give %player% 1000"
+  reward-items: []
+  gui-item:
+    material: MACE
+    index: 15
+    name: "&b&lDiamond Miner &7(ID: #1)"
+    lore:
+      - ""
+      - "&7Goal: &fMine 10 Diamonds"
+      - "&7Progress: &e%progress%&7/&e%required% &8(%percentage%%)"
+      - ""
+      - "&7Rewards:"
+      - " &8- &a$1,000"
+      - ""
+      - "&eClick to track this quest!"
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    custom-model-data: 105
+    actions:
+      - "[refresh]"

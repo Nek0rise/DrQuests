@@ -10,7 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import uwu.nekorise.drQuests.DrQuests;
 import uwu.nekorise.drQuests.database.repository.QuestRepository;
 import uwu.nekorise.drQuests.gui.service.GuiService;
+import uwu.nekorise.drQuests.quest.model.QuestDefinition;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
+import uwu.nekorise.drQuests.quest.registry.QuestRegistry;
+import uwu.nekorise.drQuests.util.HEX;
 
 import java.util.Optional;
 
@@ -19,6 +22,7 @@ public class QuestsCommand implements CommandExecutor {
 
     private final GuiService guiService;
     private final QuestRepository repository;
+    private final QuestRegistry qregistry;
 
     // FIXME
     @Override
@@ -31,6 +35,15 @@ public class QuestsCommand implements CommandExecutor {
         // /quests
         if (args.length == 0) {
             guiService.open("quests", player);
+            return true;
+        }
+
+        // /quests list
+        if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+            sender.sendMessage("quests list:");
+            for (QuestDefinition def : qregistry.findAll()) {
+                sender.sendMessage(HEX.applyColor("\n&6questId: &4" + def.getQuestId() + "&6, target: " + def.getTarget() + "&6, type: &4" + def.getType()));
+            }
             return true;
         }
 

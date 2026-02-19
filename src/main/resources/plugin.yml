@@ -5,3 +5,11 @@ api-version: '1.21'
 authors: [ Nekorise ]
 commands:
   quests: {}
+
+# TODO:
+# exploring & running quests listener
+# quest rewards (items+command)
+# in-plugin placeholders
+# PAPI
+# main config
+# strings (lang cfgs)
