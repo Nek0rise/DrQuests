@@ -7,9 +7,12 @@ commands:
   quests: {}
 
 # TODO:
-# exploring & running quests listener
-# quest rewards (items+command)
-# in-plugin placeholders
+# ---exploring & running quests listener---
+# ---quest rewards (items+command)---
+
+# in-plugin placeholders (reward command too)
 # PAPI
+
 # main config
 # strings (lang cfgs)
+# REFACTOR AND FIX ALL //FIXME COMMENTS

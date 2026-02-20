@@ -43,20 +43,36 @@ public class MongoQuestRepository implements QuestRepository {
                         Filters.eq("nickname", nickname),
                         Filters.eq("questId", questId)
                 ),
-                new Document("$inc",
-                        new Document("progress", value)
-                ).append("$setOnInsert",
-                        new Document("nickname", nickname)
-                                .append("questId", questId)
-                                .append("completed", false)
+                new Document("$inc", new Document("progress", value))
+                        .append("$setOnInsert",
+                                new Document("nickname", nickname)
+                                        .append("questId", questId)
+                                        .append("completed", false)
+                        ),
+                new UpdateOptions().upsert(true)
+        );
+    }
+
+    @Override
+    public void addBiome(String nickname, String questId, String biomeKey) {
+        collection.updateOne(
+                Filters.and(
+                        Filters.eq("nickname", nickname),
+                        Filters.eq("questId", questId)
                 ),
+                new Document("$addToSet",
+                        new Document("visitedBiomes", biomeKey))
+                        .append("$setOnInsert",
+                                new Document("nickname", nickname)
+                                        .append("questId", questId)
+                                        .append("completed", false)
+                        ),
                 new UpdateOptions().upsert(true)
         );
     }
 
     @Override
     public void setCompleted(String nickname, String questId) {
-
         collection.updateOne(
                 Filters.and(
                         Filters.eq("nickname", nickname),
@@ -102,11 +118,15 @@ public class MongoQuestRepository implements QuestRepository {
     }
 
     private QuestProgress map(Document doc) {
+        List<String> visitedBiomes = (List<String>) doc.get("visitedBiomes", List.class);
+        if (visitedBiomes == null) visitedBiomes = new ArrayList<>();
+
         return new QuestProgress(
                 doc.getString("nickname"),
                 doc.getString("questId"),
-                doc.getInteger("progress"),
-                doc.getBoolean("completed")
+                doc.getInteger("progress", 0),
+                doc.getBoolean("completed"),
+                visitedBiomes
         );
     }
 }

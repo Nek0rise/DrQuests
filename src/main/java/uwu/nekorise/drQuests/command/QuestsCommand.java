@@ -15,6 +15,7 @@ import uwu.nekorise.drQuests.quest.model.QuestProgress;
 import uwu.nekorise.drQuests.quest.registry.QuestRegistry;
 import uwu.nekorise.drQuests.util.HEX;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -62,14 +63,16 @@ public class QuestsCommand implements CommandExecutor {
                             nickname,
                             questId,
                             old.getProgress() + 1,
-                            old.isCompleted()
+                            old.isCompleted(),
+                            new ArrayList<>()
                     );
                 } else {
                     progress = new QuestProgress(
                             nickname,
                             questId,
                             1,
-                            false
+                            false,
+                            new ArrayList<>()
                     );
                 }
                 repository.save(progress);
