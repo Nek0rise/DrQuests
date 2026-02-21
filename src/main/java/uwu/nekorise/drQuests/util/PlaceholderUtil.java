@@ -47,4 +47,7 @@ public class PlaceholderUtil {
 
         return editedText;
     }
+    public static String parseCommand(String text, String nickname) {
+        return text.replace("%player%", nickname);
+    }
 }

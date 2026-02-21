@@ -10,6 +10,7 @@ import uwu.nekorise.drQuests.quest.model.QuestDefinition;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
 import uwu.nekorise.drQuests.quest.model.QuestType;
 import uwu.nekorise.drQuests.quest.registry.QuestRegistry;
+import uwu.nekorise.drQuests.util.PlaceholderUtil;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -126,8 +127,10 @@ public class QuestService {
 
     private void giveRewards(String nickname, QuestDefinition questDef) {
         Bukkit.getScheduler().runTask(instance, () -> {
-            if (questDef.getRewardCommand() != null) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), questDef.getRewardCommand());
+            String rewardCommand = questDef.getRewardCommand();
+            if (rewardCommand != null) {
+                rewardCommand = PlaceholderUtil.parseCommand(rewardCommand, nickname);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), rewardCommand);
             }
             Player player = Bukkit.getPlayer(nickname);
             if (player != null && player.isOnline()) {
