@@ -2,9 +2,11 @@ package uwu.nekorise.drQuests.database.repository;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import uwu.nekorise.drQuests.database.MongoManager;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
 
@@ -17,6 +19,10 @@ public class MongoQuestRepository implements QuestRepository {
 
     public MongoQuestRepository(MongoManager mongoManager) {
         this.collection = mongoManager.getDatabase().getCollection("quests");
+        this.collection.createIndex(
+                new Document("nickname", 1).append("questId", 1),
+                new IndexOptions().unique(true)
+        );
     }
 
     @Override
@@ -37,18 +43,41 @@ public class MongoQuestRepository implements QuestRepository {
         );
     }
 
-    public void addProgress(String nickname, String questId, int value) {
+    @Override
+    public void addProgress(String nickname, String questId, int amount) {
+        List<Bson> updated = List.of(
+                // create if not exists
+                new Document("$set",
+                        new Document("nickname", nickname)
+                                .append("questId", questId)
+                                .append("completed",
+                                        new Document("$ifNull",
+                                                List.of("$completed", false)))
+                                .append("progress",
+                                        new Document("$ifNull",
+                                                List.of("$progress", 0)))
+                ),
+
+                // update if completed false
+                new Document("$set",
+                        new Document("progress",
+                                new Document("$cond", List.of(
+                                        new Document("$eq",
+                                                List.of("$completed", true)),
+                                        "$progress",
+                                        new Document("$add",
+                                                List.of("$progress", amount))
+                                ))
+                        )
+                )
+        );
+
         collection.updateOne(
                 Filters.and(
                         Filters.eq("nickname", nickname),
                         Filters.eq("questId", questId)
                 ),
-                new Document("$inc", new Document("progress", value))
-                        .append("$setOnInsert",
-                                new Document("nickname", nickname)
-                                        .append("questId", questId)
-                                        .append("completed", false)
-                        ),
+                updated,
                 new UpdateOptions().upsert(true)
         );
     }

@@ -48,8 +48,8 @@ public final class DrQuests extends JavaPlugin {
         guiLoader.load(guiRegistry);
         QuestConfigLoader questLoader = new QuestConfigLoader(configManager);
         questLoader.load(questRegistry);
-        guiService = new GuiService(guiRegistry);
         initMongoDB();
+        guiService = new GuiService(guiRegistry, instance, questRepository);
         questService = new QuestService(questRegistry, questRepository, statsService, instance);
 
 

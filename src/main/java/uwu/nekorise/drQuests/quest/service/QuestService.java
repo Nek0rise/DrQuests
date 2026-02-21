@@ -16,7 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 public class QuestService {
-
     private final QuestRegistry questRegistry;
     private final QuestRepository questRepository;
     private final QuestStatsService statsService;
@@ -28,6 +27,7 @@ public class QuestService {
 
         for (QuestDefinition questDef : questRegistry.findAll()) {
             if (questDef.getType() != type) continue;
+
             switch (type) {
                 case EXPLORING -> {
                     String biomeKey = ((Biome) target).getKey().toString();
@@ -53,12 +53,15 @@ public class QuestService {
                     questDef.getQuestId(),
                     1
             );
-            QuestProgress progress = questRepository.find(
-                    nickname,
-                    questDef.getQuestId()
-            ).orElseThrow();
 
-            if (!progress.isCompleted() && progress.getProgress() >= questDef.getRequiredAmount()) {
+            QuestProgress progress =
+                    questRepository.find(
+                            nickname,
+                            questDef.getQuestId()
+                    ).orElse(null);
+
+            if (progress == null || progress.isCompleted()) return;
+            if (progress.getProgress() >= questDef.getRequiredAmount()) {
                 finish(nickname, questDef);
             }
         });
@@ -79,12 +82,14 @@ public class QuestService {
                     blocks
             );
 
-            QuestProgress progress = questRepository.find(
-                    nickname,
-                    questDef.getQuestId()
-            ).orElseThrow();
+            QuestProgress progress =
+                    questRepository.find(
+                            nickname,
+                            questDef.getQuestId()
+                    ).orElse(null);
 
-            if (!progress.isCompleted() && progress.getProgress() >= questDef.getRequiredAmount()) {
+            if (progress == null || progress.isCompleted()) return;
+            if (progress.getProgress() >= questDef.getRequiredAmount()) {
                 finish(nickname, questDef);
             }
         });
@@ -98,23 +103,23 @@ public class QuestService {
                     biomeKey
             );
 
-            QuestProgress progress = questRepository.find(
-                    nickname,
-                    questDef.getQuestId()
-            ).orElseThrow();
+            QuestProgress progress =
+                    questRepository.find(
+                            nickname,
+                            questDef.getQuestId()
+                    ).orElse(null);
+
+            if (progress == null || progress.isCompleted()) return;
 
             int currentProgress = progress.getVisitedBiomes().size();
-            if (!progress.isCompleted() && currentProgress >= questDef.getRequiredAmount()) {
+            if (currentProgress >= questDef.getRequiredAmount()) {
                 finish(nickname, questDef);
             }
         });
     }
 
     public void finish(String nickname, QuestDefinition questDef) {
-        questRepository.setCompleted(
-                nickname,
-                questDef.getQuestId()
-        );
+        questRepository.setCompleted(nickname, questDef.getQuestId());
         statsService.refresh(nickname);
         giveRewards(nickname, questDef);
     }
