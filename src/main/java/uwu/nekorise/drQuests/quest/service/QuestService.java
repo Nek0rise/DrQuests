@@ -21,6 +21,7 @@ public class QuestService {
     private final QuestRepository questRepository;
     private final QuestStatsService statsService;
     private final DrQuests instance;
+    private final QuestCacheService cacheService;
     private final Map<String, Double> runningBuffer = new ConcurrentHashMap<>();
 
     public void progress(Player player, QuestType type, Object target) {
@@ -122,6 +123,7 @@ public class QuestService {
     public void finish(String nickname, QuestDefinition questDef) {
         questRepository.setCompleted(nickname, questDef.getQuestId());
         statsService.refresh(nickname);
+        cacheService.refresh(nickname);
         giveRewards(nickname, questDef);
     }
 

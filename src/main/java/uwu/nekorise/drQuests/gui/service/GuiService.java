@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import uwu.nekorise.drQuests.DrQuests;
 import uwu.nekorise.drQuests.database.repository.QuestRepository;
+import uwu.nekorise.drQuests.database.repository.StatsRepository;
 import uwu.nekorise.drQuests.gui.action.GuiAction;
 import uwu.nekorise.drQuests.gui.action.GuiActionContext;
 import uwu.nekorise.drQuests.gui.data.PlayerQuestData;
@@ -13,6 +14,7 @@ import uwu.nekorise.drQuests.gui.model.GuiDefinition;
 import uwu.nekorise.drQuests.gui.model.GuiItem;
 import uwu.nekorise.drQuests.gui.registry.GuiRegistry;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
+import uwu.nekorise.drQuests.quest.model.QuestStats;
 
 import java.util.List;
 import java.util.Map;
@@ -23,30 +25,41 @@ public class GuiService {
     private final GuiRenderer guiRenderer;
     private final DrQuests drQuests;
     private final QuestRepository questRepository;
+    private final StatsRepository statsRepository;
 
-    public GuiService(GuiRegistry guiRegistry, DrQuests drQuests, QuestRepository questRepository) {
+    public GuiService(GuiRegistry guiRegistry, DrQuests drQuests, QuestRepository questRepository, StatsRepository statsRepository) {
         this.guiRegistry = guiRegistry;
         this.drQuests = drQuests;
         this.questRepository = questRepository;
         this.guiRenderer = new GuiRenderer(drQuests.getQuestRegistry());
+        this.statsRepository = statsRepository;
     }
 
     public void open(String name, Player player) {
         GuiDefinition def = guiRegistry.find(name).orElse(null);
+
         if (def == null) return;
+        String nickname = player.getName().toLowerCase();
 
         Bukkit.getScheduler().runTaskAsynchronously(drQuests, () -> {
-            List<QuestProgress> progresses = questRepository.findAll(player.getName().toLowerCase());
-            Map<String, QuestProgress> map = progresses.stream()
-                    .collect(Collectors.toMap(
-                            QuestProgress::getQuestId,
-                            p -> p
-                    ));
+            List<QuestProgress> progresses = questRepository.findAll(nickname);
+            Map<String, QuestProgress> progressMap =
+                    progresses.stream()
+                            .collect(Collectors.toMap(
+                                    QuestProgress::getQuestId,
+                                    p -> p
+                            ));
 
-            PlayerQuestData playerQuestData = new PlayerQuestData(player, map);
+            QuestStats stats = statsRepository.find(nickname)
+                    .orElse(new QuestStats(nickname, 0));
+            PlayerQuestData context = new PlayerQuestData(
+                    Bukkit.getOfflinePlayer(nickname),
+                    progressMap,
+                    stats
+            );
 
             Bukkit.getScheduler().runTask(drQuests, () -> {
-                Inventory inventory = guiRenderer.render(def, playerQuestData);
+                Inventory inventory = guiRenderer.render(def, context);
                 player.openInventory(inventory);
             });
         });

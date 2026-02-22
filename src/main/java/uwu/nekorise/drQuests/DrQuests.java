@@ -17,6 +17,8 @@ import uwu.nekorise.drQuests.config.GuiConfigLoader;
 import uwu.nekorise.drQuests.event.QuestListener;
 import uwu.nekorise.drQuests.gui.registry.GuiRegistry;
 import uwu.nekorise.drQuests.gui.service.GuiService;
+import uwu.nekorise.drQuests.placeholderapi.PapiExpansion;
+import uwu.nekorise.drQuests.quest.service.QuestCacheService;
 import uwu.nekorise.drQuests.quest.registry.QuestRegistry;
 import uwu.nekorise.drQuests.quest.service.QuestService;
 import uwu.nekorise.drQuests.quest.service.QuestStatsService;
@@ -36,6 +38,8 @@ public final class DrQuests extends JavaPlugin {
     @Getter private StatsRepository statsRepository;
     @Getter private QuestStatsService statsService;
 
+    @Getter private QuestCacheService cacheService;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -49,13 +53,17 @@ public final class DrQuests extends JavaPlugin {
         QuestConfigLoader questLoader = new QuestConfigLoader(configManager);
         questLoader.load(questRegistry);
         initMongoDB();
-        guiService = new GuiService(guiRegistry, instance, questRepository);
-        questService = new QuestService(questRegistry, questRepository, statsService, instance);
-
+        guiService = new GuiService(guiRegistry, instance, questRepository, statsRepository);
+        cacheService = new QuestCacheService(instance, questRepository, statsRepository);
+        questService = new QuestService(questRegistry, questRepository, statsService, instance, cacheService);
 
         registerCommands();
         registerTabCompleters();
         registerListeners();
+
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PapiExpansion(instance).register();
+        }
     }
 
     @Override
@@ -74,7 +82,7 @@ public final class DrQuests extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new InventoryListener(guiService), instance);
-        pm.registerEvents(new JoinListener(statsService), instance);
+        pm.registerEvents(new JoinListener(statsService, cacheService), instance);
         pm.registerEvents(new QuestListener(questService), instance);
     }
 

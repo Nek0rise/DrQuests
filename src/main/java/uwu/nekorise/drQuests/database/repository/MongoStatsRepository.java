@@ -50,10 +50,7 @@ public class MongoStatsRepository implements StatsRepository {
 
     @Override
     public Optional<QuestStats> find(String nickname) {
-        Document doc = collection.find(
-                Filters.eq("nickname", nickname)
-        ).first();
-
+        Document doc = collection.find(Filters.eq("nickname", nickname)).first();
         if (doc == null) return Optional.empty();
         return Optional.of(map(doc));
     }

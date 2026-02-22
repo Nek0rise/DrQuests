@@ -25,17 +25,15 @@ public class QuestStatsService {
     }
 
     public void refresh(String nickname) {
-        Bukkit.getScheduler().runTaskAsynchronously(drQuests, () -> {
-            List<QuestProgress> progresses = questRepository.findAll(nickname);
-            int total = 0;
+        List<QuestProgress> progresses = questRepository.findAll(nickname);
+        int total = 0;
 
-            for (QuestProgress progress : progresses) {
-                if (!progress.isCompleted()) continue;
-                if (!questRegistry.exists(progress.getQuestId())) continue;
-                total++;
-            }
-
-            statsRepository.save(new QuestStats(nickname, total));
-        });
+        for (QuestProgress progress : progresses) {
+            if (!progress.isCompleted()) continue;
+            //all records from the db with the isCompleted status are read.
+            //if (!questRegistry.exists(progress.getQuestId())) continue;
+            total++;
+        }
+        statsRepository.save(new QuestStats(nickname, total));
     }
 }

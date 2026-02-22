@@ -2,7 +2,7 @@ package uwu.nekorise.drQuests.util;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import uwu.nekorise.drQuests.gui.data.PlayerQuestData;
 import uwu.nekorise.drQuests.quest.model.QuestDefinition;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
@@ -13,7 +13,7 @@ public class PlaceholderUtil {
     public static String parse(String text, PlayerQuestData playerQuestData, QuestDefinition quest) {
         if (text == null) return null;
 
-        Player player = playerQuestData.getPlayer();
+        OfflinePlayer player = playerQuestData.getPlayer();
         String editedText = text.replace("%player%", player.getName());
 
         if (quest != null) {
