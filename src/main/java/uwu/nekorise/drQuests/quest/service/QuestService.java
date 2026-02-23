@@ -12,6 +12,7 @@ import uwu.nekorise.drQuests.quest.model.QuestType;
 import uwu.nekorise.drQuests.quest.registry.QuestRegistry;
 import uwu.nekorise.drQuests.util.PlaceholderUtil;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -120,8 +121,44 @@ public class QuestService {
         });
     }
 
+    public void setProgress(String nickname, QuestDefinition questDef, int newValue) {
+        Bukkit.getScheduler().runTaskAsynchronously(instance, () -> {
+            String questId = questDef.getQuestId();
+            int required = questDef.getRequiredAmount();
+            QuestProgress existing = questRepository.find(nickname, questId).orElse(null);
+            boolean wasCompleted = existing != null && existing.isCompleted();
+            boolean shouldBeCompleted = newValue >= required;
+
+            QuestProgress updated = new QuestProgress(
+                    nickname,
+                    questId,
+                    newValue,
+                    shouldBeCompleted,
+                    existing != null ? existing.getVisitedBiomes() : new ArrayList<>()
+            );
+
+            questRepository.save(updated);
+
+            if (shouldBeCompleted) {
+                if (!wasCompleted) {
+                    statsService.refresh(nickname);
+                    cacheService.refresh(nickname);
+                    giveRewards(nickname, questDef);
+                } else {
+                    cacheService.refresh(nickname);
+                }
+                return;
+            }
+            if (wasCompleted) {
+                statsService.refresh(nickname);
+            }
+
+            cacheService.refresh(nickname);
+        });
+    }
+
     public void finish(String nickname, QuestDefinition questDef) {
-        questRepository.setCompleted(nickname, questDef.getQuestId());
+        questRepository.setCompleted(nickname, questDef.getQuestId(), true);
         statsService.refresh(nickname);
         cacheService.refresh(nickname);
         giveRewards(nickname, questDef);

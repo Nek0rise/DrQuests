@@ -3,11 +3,12 @@ package uwu.nekorise.drQuests.util;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import uwu.nekorise.drQuests.DrQuests;
+import uwu.nekorise.drQuests.config.model.LangConfig;
 import uwu.nekorise.drQuests.gui.data.PlayerQuestData;
 import uwu.nekorise.drQuests.quest.model.QuestDefinition;
 import uwu.nekorise.drQuests.quest.model.QuestProgress;
 import uwu.nekorise.drQuests.quest.model.QuestType;
-
 
 public class PlaceholderUtil {
     public static String parse(String text, PlayerQuestData playerQuestData, QuestDefinition quest) {
@@ -33,12 +34,13 @@ public class PlaceholderUtil {
 
             int required = quest.getRequiredAmount();
             int percentage = required == 0 ? 0 : (int)((current * 100.0) / required);
+            LangConfig langConfig = DrQuests.getInstance().getConfigManager().getLangConfig();
 
             editedText = editedText
                     .replace("%progress%", String.valueOf(current))
                     .replace("%required%", String.valueOf(required))
                     .replace("%percentage%", String.valueOf(percentage))
-                    .replace("%status%", completed ? "Completed" : "In Progress");//FIXME
+                    .replace("%status%", completed ? langConfig.getCompletedStatus() : langConfig.getInProgressStatus());
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -49,5 +51,10 @@ public class PlaceholderUtil {
     }
     public static String parseCommand(String text, String nickname) {
         return text.replace("%player%", nickname);
+    }
+    public static String parseLang(String text, String questId, String value) {
+        return text
+                .replace("%questId%", questId)
+                .replace("%value%", value);
     }
 }

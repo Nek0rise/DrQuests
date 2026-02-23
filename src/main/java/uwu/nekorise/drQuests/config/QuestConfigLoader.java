@@ -36,7 +36,7 @@ public class QuestConfigLoader {
                 ConfigurationSection section = config.getConfigurationSection(key);
 
                 if (section == null) continue;
-                if (!section.contains("type")) continue;
+                if (!section.contains("id")) continue;
 
                 String questId = section.getString("id", key);
 

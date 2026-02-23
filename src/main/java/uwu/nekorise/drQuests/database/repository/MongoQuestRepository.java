@@ -101,14 +101,14 @@ public class MongoQuestRepository implements QuestRepository {
     }
 
     @Override
-    public void setCompleted(String nickname, String questId) {
+    public void setCompleted(String nickname, String questId, boolean isCompleted) {
         collection.updateOne(
                 Filters.and(
                         Filters.eq("nickname", nickname),
                         Filters.eq("questId", questId)
                 ),
                 new Document("$set",
-                        new Document("completed", true)
+                        new Document("completed", isCompleted)
                 )
         );
     }

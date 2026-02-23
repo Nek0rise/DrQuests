@@ -9,7 +9,7 @@ public interface QuestRepository {
     void save(QuestProgress progress);
     void addProgress(String nickname, String questId, int value);
     void addBiome(String nickname, String questId, String biomeKey);
-    void setCompleted(String nickname, String questId);
+    void setCompleted(String nickname, String questId, boolean isCompleted);
     void delete(String nickname, String questId);
     Optional<QuestProgress> find(String nickname, String questId);
     List<QuestProgress> findAll(String nickname);
