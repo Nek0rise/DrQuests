@@ -1,0 +1,4 @@
+language: en
+main-gui: quests
+mongodb:
+  uri: "mongodb://localhost:27017"

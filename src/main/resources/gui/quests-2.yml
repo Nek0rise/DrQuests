@@ -1,0 +1,39 @@
+title: "Quests gui page 2"
+size: 27
+quest-1:
+  id: quest-3
+  type: EXPLORING
+  required-amount: 10
+  reward-command: "eco give %player% 1000"
+  reward-items: [DIAMOND_BOOTS]
+  gui-item:
+    material: MOSS_BLOCK
+    index: 13
+    name: "&b&lJourney"
+    lore:
+      - ""
+      - "&7Goal: &fExplore 10 Biomes"
+      - "&7Progress: &e%progress%&7/&e%required% &8(%percentage%%)"
+      - ""
+      - "&7Rewards:"
+      - " &8- &a$1,000"
+      - ""
+      - "&7Status: %status%"
+      - ""
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    custom-model-data: 105
+    actions:
+      - "[refresh]"
+previous-page:
+  gui-item:
+    material: ARROW
+    index: 22
+    name: "&fPrevious page"
+    lore: []
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    actions:
+      - "[open_gui] quests"

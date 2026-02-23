@@ -1,0 +1,63 @@
+title: "Quests gui"
+size: 27
+quest-1:
+  id: quest-1
+  type: MINING
+  target: DIAMOND_ORE
+  required-amount: 64
+  reward-command: "eco give %player% 1000"
+  reward-items: [DIAMOND, NETHERITE_INGOT]
+  gui-item:
+    material: DIAMOND_PICKAXE
+    index: 11
+    name: "&b&lDiamond Miner"
+    lore:
+      - ""
+      - "&7Goal: &fMine 64 Diamonds"
+      - "&7Progress: &e%progress%&7/&e%required% &8(%percentage%%)"
+      - ""
+      - "&7Rewards:"
+      - " &8- &a$1,000"
+      - ""
+      - "&7Status: %status%"
+      - ""
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    custom-model-data: 105
+    actions:
+      - "[refresh]"
+quest-2:
+  id: quest-2
+  type: RUNNING
+  required-amount: 200
+  reward-command: "say hi, %player%!"
+  reward-items: [DIAMOND]
+  gui-item:
+    material: RABBIT_FOOT
+    index: 15
+    name: "&b&lRunner"
+    lore:
+      - ""
+      - "&7Goal: &fRun 200 Blocks"
+      - "&7Progress: &e%progress%&7/&e%required% &8(%percentage%%)"
+      - ""
+      - "&7Status: %status%"
+      - ""
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    custom-model-data: 105
+    actions:
+      - "[refresh]"
+next-page:
+  gui-item:
+    material: ARROW
+    index: 22
+    name: "&fNext page"
+    lore: []
+    flags:
+      - HIDE_ATTRIBUTES
+      - HIDE_ENCHANTS
+    actions:
+      - "[open_gui] quests-2"

@@ -3,3 +3,22 @@ version: '1.1'
 main: uwu.nekorise.drQuests.DrQuests
 api-version: '1.21'
 authors: [ Nekorise ]
+softdepend: ["PlaceholderAPI"]
+commands:
+  quests: {}
+  questadmin: {}
+
+# TODO:
+# ---exploring & running quests listener---
+# ---quest rewards (items+command)---
+
+# --in-plugin placeholders (reward command too)--
+# --PAPI--
+
+# --main config--
+# --Perms & commands--
+# --strings (lang cfgs)--
+
+# REFACTOR AND FIX ALL //FIXME COMMENTS
+
+

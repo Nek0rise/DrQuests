@@ -1,0 +1,16 @@
+no-permission: "&cNo permission"
+only-players: "Only players can use this command"
+status:
+  completed: "&aCompleted"
+  in-progress: "&cIn progress"
+questadmin-command:
+  usage: "&6/questadmin setprogress <player> <id> <value>\n/questadmin reset <player> <id>\n/questadmin reload"
+  setprogress:
+    usage: "&6Usage: /questadmin setprogress <player> <id> <value>"
+    invalid-value: "&cValue must be a number"
+  reset:
+    usage: "&6Usage: /questadmin reset <player> <id>"
+  reload:
+    successfully: "&aConfigs reloaded"
+  quest-not-found: "&cQuest not found: &6%questId%"
+  successfully-set: "&aProgress set to &6%value% &afor quest &6%questId%"
